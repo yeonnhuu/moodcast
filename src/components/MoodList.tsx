@@ -1,21 +1,40 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { MoodEntry } from "@/types/mood";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { Edit, Trash2 } from 'lucide-react';
+import MoodEditDialog from './MoodEditDialog';
+import { getEmotionIcon } from "@/utils/moodUtils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface MoodListProps {
   entries: MoodEntry[];
+  onUpdate: (updatedEntry: MoodEntry) => void;
+  onDelete: (entryId: string) => void;
 }
 
-const MoodList: React.FC<MoodListProps> = ({ entries }) => {
+const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
+  const [editingEntry, setEditingEntry] = useState<MoodEntry | null>(null);
+  const [deletingEntry, setDeletingEntry] = useState<MoodEntry | null>(null);
+
   if (entries.length === 0) {
     return (
       <Card className="bg-white/70 backdrop-blur-md border-0 shadow-lg">
         <CardContent className="text-center py-16">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-200 opacity-50 flex items-center justify-center">
-            <span className="text-4xl">🌤️</span>
+            <span className="text-4xl">🌤</span>
           </div>
           <h3 className="text-xl font-semibold text-gray-600 mb-2">
             아직 기록된 날씨가 없어요
@@ -27,6 +46,21 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
       </Card>
     );
   }
+
+  const handleEdit = (entry: MoodEntry) => {
+    setEditingEntry(entry);
+  };
+
+  const handleDelete = (entry: MoodEntry) => {
+    setDeletingEntry(entry);
+  };
+
+  const confirmDelete = () => {
+    if (deletingEntry) {
+      onDelete(deletingEntry.id);
+      setDeletingEntry(null);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -41,6 +75,8 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
       
       {entries.map((entry) => {
         const gradientClass = getWeatherGradient(entry.emotionTag);
+        const emotionIcon = getEmotionIcon(entry.emotionTag);
+        
         return (
           <Card key={entry.id} className={`${gradientClass} border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden`}>
             <CardContent className="p-0">
@@ -48,12 +84,10 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
                 <div className="absolute inset-0 bg-black/20"></div>
                 <div className="relative z-10 p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden shadow-lg flex-shrink-0">
-                      <img 
-                        src={entry.weatherImage} 
-                        alt="감정 날씨"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-16 h-16 rounded-full overflow-hidden shadow-lg flex-shrink-0 bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <div className="text-2xl text-white">
+                        {emotionIcon}
+                      </div>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
@@ -72,9 +106,29 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
                             ))}
                           </div>
                         </div>
-                        <span className="text-white/80 text-xs">
-                          {format(entry.createdAt, 'M.d HH:mm', { locale: ko })}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-white/80 text-xs">
+                            {format(entry.createdAt, 'M.d HH:mm', { locale: ko })}
+                          </span>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEdit(entry)}
+                              className="h-8 w-8 p-0 text-white/80 hover:text-white hover:bg-white/20"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDelete(entry)}
+                              className="h-8 w-8 p-0 text-white/80 hover:text-white hover:bg-white/20"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                       
                       <p className="text-white leading-relaxed text-sm mb-3 line-clamp-2">
@@ -96,6 +150,32 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
           </Card>
         );
       })}
+
+      {/* 수정 다이얼로그 */}
+      {editingEntry && (
+        <MoodEditDialog
+          entry={editingEntry}
+          open={!!editingEntry}
+          onClose={() => setEditingEntry(null)}
+          onSave={onUpdate}
+        />
+      )}
+
+      {/* 삭제 확인 다이얼로그 */}
+      <AlertDialog open={!!deletingEntry} onOpenChange={() => setDeletingEntry(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>감정 일기를 삭제하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              이 작업은 되돌릴 수 없습니다. 감정 일기가 영구적으로 삭제됩니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>삭제</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

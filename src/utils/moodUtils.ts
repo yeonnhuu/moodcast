@@ -1,4 +1,20 @@
+
 import { EmotionTag, WeatherMapping } from "@/types/mood";
+
+// 감정별 아이콘 매핑 (심플한 텍스트 아이콘)
+export const getEmotionIcon = (emotionTag: EmotionTag): string => {
+  const emotionIcons = {
+    '기쁨': '☀',
+    '슬픔': '☔',
+    '분노': '⚡',
+    '외로움': '☁',
+    '불안': '🌪',
+    '무기력': '🌫',
+    '평온': '🌤',
+    '설렘': '🌈'
+  };
+  return emotionIcons[emotionTag] || '☀';
+};
 
 const weatherMapping: WeatherMapping = {
   '슬픔': {

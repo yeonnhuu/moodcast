@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { EmotionTag } from "@/types/mood";
-import { getWeatherImage, getWeatherDescription } from "@/utils/moodUtils";
+import { getWeatherDescription, getEmotionIcon } from "@/utils/moodUtils";
 
 interface WeatherImageDisplayProps {
   emotionTag: EmotionTag;
@@ -9,20 +9,18 @@ interface WeatherImageDisplayProps {
 }
 
 const WeatherImageDisplay: React.FC<WeatherImageDisplayProps> = ({ emotionTag, intensity }) => {
-  const weatherImage = getWeatherImage(emotionTag, intensity);
   const description = getWeatherDescription(emotionTag, intensity);
   const gradientClass = getWeatherGradient(emotionTag);
+  const emotionIcon = getEmotionIcon(emotionTag);
 
   return (
     <div className={`${gradientClass} rounded-2xl p-6 text-center shadow-lg relative overflow-hidden`}>
       <div className="absolute inset-0 bg-black/10"></div>
       <div className="relative z-10">
-        <div className="w-24 h-24 mx-auto mb-3 rounded-full overflow-hidden shadow-lg">
-          <img 
-            src={weatherImage} 
-            alt={description}
-            className="w-full h-full object-cover"
-          />
+        <div className="w-24 h-24 mx-auto mb-3 rounded-full overflow-hidden shadow-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+          <div className="text-4xl text-white">
+            {emotionIcon}
+          </div>
         </div>
         <h3 className="text-lg font-semibold text-white mb-1">
           오늘의 감정 날씨

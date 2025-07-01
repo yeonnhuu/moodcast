@@ -29,6 +29,33 @@ const Index = () => {
     setActiveTab('today');
   };
 
+  const handleMoodUpdate = (updatedEntry: MoodEntry) => {
+    setMoodEntries(prev => 
+      prev.map(entry => 
+        entry.id === updatedEntry.id ? updatedEntry : entry
+      )
+    );
+    
+    // 오늘의 감정인 경우 업데이트
+    const today = new Date().toDateString();
+    if (updatedEntry.createdAt.toDateString() === today) {
+      setTodayMood(updatedEntry);
+    }
+  };
+
+  const handleMoodDelete = (entryId: string) => {
+    setMoodEntries(prev => prev.filter(entry => entry.id !== entryId));
+    
+    // 삭제된 항목이 오늘의 감정인 경우 초기화
+    if (todayMood?.id === entryId) {
+      const today = new Date().toDateString();
+      const remainingTodayEntries = moodEntries.filter(entry => 
+        entry.id !== entryId && entry.createdAt.toDateString() === today
+      );
+      setTodayMood(remainingTodayEntries.length > 0 ? remainingTodayEntries[0] : null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
       {/* 헤더 - 날씨 앱 스타일 */}
@@ -84,7 +111,11 @@ const Index = () => {
         )}
         
         {activeTab === 'list' && (
-          <MoodList entries={moodEntries} />
+          <MoodList 
+            entries={moodEntries} 
+            onUpdate={handleMoodUpdate}
+            onDelete={handleMoodDelete}
+          />
         )}
       </div>
     </div>

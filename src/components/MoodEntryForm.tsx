@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { MoodEntry, EmotionTag } from "@/types/mood";
 import WeatherImageDisplay from "./WeatherImageDisplay";
 import PositiveMessageChat from "./PositiveMessageChat";
-import { getWeatherImage, isNegativeEmotion } from "@/utils/moodUtils";
+import { getWeatherImage, isNegativeEmotion, getEmotionIcon } from "@/utils/moodUtils";
 
 interface MoodEntryFormProps {
   onSave: (entry: MoodEntry) => void;
@@ -76,7 +76,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
             </div>
           </div>
 
-          {/* 감정 태그 선택 - 새로운 버튼 스타일 */}
+          {/* 감정 태그 선택 - 아이콘 버튼 스타일 */}
           <div>
             <Label className="text-gray-700 font-medium">감정 종류</Label>
             <div className="grid grid-cols-2 gap-3 mt-3">
@@ -91,7 +91,9 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
                   } ${getEmotionGradient(tag)}`}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <div className="text-2xl">{getEmotionWeatherIcon(tag)}</div>
+                    <div className="text-2xl text-white">
+                      {getEmotionIcon(tag)}
+                    </div>
                     <span className="text-white font-medium text-sm drop-shadow-sm">
                       {tag}
                     </span>
@@ -179,21 +181,6 @@ const getEmotionGradient = (emotion: EmotionTag): string => {
     '설렘': 'bg-gradient-to-br from-pink-400 to-purple-400'
   };
   return gradients[emotion] || 'bg-gradient-to-br from-gray-400 to-gray-500';
-};
-
-// 감정별 날씨 아이콘
-const getEmotionWeatherIcon = (emotion: EmotionTag): string => {
-  const weatherIcons = {
-    '기쁨': '☀️',
-    '슬픔': '🌧️',
-    '분노': '⛈️',
-    '외로움': '🌫️',
-    '불안': '🌪️',
-    '무기력': '☁️',
-    '평온': '🌤️',
-    '설렘': '🌈'
-  };
-  return weatherIcons[emotion] || '☀️';
 };
 
 export default MoodEntryForm;

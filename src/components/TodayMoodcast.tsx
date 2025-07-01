@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MoodEntry } from "@/types/mood";
-import { getWeatherDescription, getWeatherImage } from "@/utils/moodUtils";
+import { getWeatherDescription, getEmotionIcon } from "@/utils/moodUtils";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -22,7 +22,7 @@ const TodayMoodcast: React.FC<TodayMoodcastProps> = ({ todayMood, onWriteClick }
         <Card className="bg-gradient-to-br from-gray-100 to-gray-200 border-0 shadow-lg">
           <CardContent className="p-8 text-center">
             <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-300 opacity-50 flex items-center justify-center">
-              <span className="text-2xl">🌫️</span>
+              <span className="text-2xl">🌫</span>
             </div>
             <h2 className="text-xl font-semibold text-gray-600 mb-2">
               아직 기록된 감정이 없어요
@@ -54,7 +54,7 @@ const TodayMoodcast: React.FC<TodayMoodcastProps> = ({ todayMood, onWriteClick }
 
   const gradientClass = getWeatherGradient(todayMood.emotionTag, todayMood.intensity);
   const description = getWeatherDescription(todayMood.emotionTag, todayMood.intensity);
-  const weatherImageUrl = getWeatherImage(todayMood.emotionTag, todayMood.intensity);
+  const emotionIcon = getEmotionIcon(todayMood.emotionTag);
 
   return (
     <div className="space-y-6">
@@ -66,12 +66,10 @@ const TodayMoodcast: React.FC<TodayMoodcastProps> = ({ todayMood, onWriteClick }
             {format(todayMood.createdAt, 'M월 d일 EEEE', { locale: ko })}
           </div>
           
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden shadow-lg">
-            <img 
-              src={weatherImageUrl} 
-              alt={description}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden shadow-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <div className="text-4xl text-white">
+              {emotionIcon}
+            </div>
           </div>
           
           <h2 className="text-2xl font-bold text-white mb-2">
