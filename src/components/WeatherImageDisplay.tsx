@@ -17,18 +17,22 @@ const WeatherImageDisplay: React.FC<WeatherImageDisplayProps> = ({ emotionTag, i
     <div className={`${gradientClass} rounded-2xl p-6 text-center shadow-lg relative overflow-hidden`}>
       <div className="absolute inset-0 bg-black/10"></div>
       <div className="relative z-10">
-        <div className="text-7xl mb-3 filter drop-shadow-lg animate-pulse">
-          {weatherImage}
+        <div className="w-24 h-24 mx-auto mb-3 rounded-full overflow-hidden shadow-lg">
+          <img 
+            src={weatherImage} 
+            alt={description}
+            className="w-full h-full object-cover"
+          />
         </div>
         <h3 className="text-lg font-semibold text-white mb-1">
-          오늘의 기분 날씨
+          오늘의 감정 날씨
         </h3>
         <p className="text-white/90 text-sm">{description}</p>
         
         {/* 날씨 세부 정보 */}
         <div className="mt-4 bg-white/20 backdrop-blur-sm rounded-xl p-3">
           <div className="flex justify-between items-center text-white/90 text-xs">
-            <span>기분 종류</span>
+            <span>감정 종류</span>
             <span className="font-medium">{emotionTag}</span>
           </div>
           <div className="flex justify-between items-center text-white/90 text-xs mt-1">

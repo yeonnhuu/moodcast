@@ -1,30 +1,61 @@
-
 import { EmotionTag, WeatherMapping } from "@/types/mood";
 
 const weatherMapping: WeatherMapping = {
   '슬픔': {
-    '1': '🌤️', '2': '🌤️', '3': '☁️', '4': '🌧️', '5': '🌧️'
+    '1': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=400&h=300&fit=crop'
   },
   '기쁨': {
-    '1': '🌤️', '2': '☀️', '3': '☀️', '4': '🌞', '5': '🌞'
+    '1': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop'
   },
   '분노': {
-    '1': '🌤️', '2': '☁️', '3': '⛈️', '4': '⛈️', '5': '⚡'
+    '1': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop'
   },
   '외로움': {
-    '1': '🌫️', '2': '🌫️', '3': '🌫️', '4': '🌫️', '5': '🌫️'
+    '1': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop'
   },
   '불안': {
-    '1': '🌪️', '2': '🌪️', '3': '🌪️', '4': '🌪️', '5': '🌪️'
+    '1': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop'
   },
   '무기력': {
-    '1': '☁️', '2': '☁️', '3': '🌫️', '4': '🌫️', '5': '🌫️'
+    '1': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop'
   },
   '평온': {
-    '1': '🌤️', '2': '🌤️', '3': '☀️', '4': '☀️', '5': '☀️'
+    '1': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop'
   },
   '설렘': {
-    '1': '🌤️', '2': '🌈', '3': '🌈', '4': '🌈', '5': '✨'
+    '1': 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop', 
+    '2': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop', 
+    '3': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop', 
+    '4': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop', 
+    '5': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop'
   }
 };
 
@@ -64,7 +95,7 @@ const positiveMessages: { [key in EmotionTag]?: string } = {
 };
 
 export const getWeatherImage = (emotionTag: EmotionTag, intensity: number): string => {
-  return weatherMapping[emotionTag]?.[intensity.toString()] || '☀️';
+  return weatherMapping[emotionTag]?.[intensity.toString()] || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop';
 };
 
 export const getWeatherDescription = (emotionTag: EmotionTag, intensity: number): string => {

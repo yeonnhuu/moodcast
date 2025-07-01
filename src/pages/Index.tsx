@@ -13,7 +13,7 @@ const Index = () => {
   const [todayMood, setTodayMood] = useState<MoodEntry | null>(null);
 
   useEffect(() => {
-    // 오늘의 마지막 기분 기록을 가져오기
+    // 오늘의 마지막 감정 기록을 가져오기
     const today = new Date().toDateString();
     const todayEntries = moodEntries.filter(entry => 
       entry.createdAt.toDateString() === today
@@ -38,7 +38,7 @@ const Index = () => {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Moodcast
             </h1>
-            <p className="text-xs text-gray-600 mt-1">오늘의 기분 날씨</p>
+            <p className="text-xs text-gray-600 mt-1">오늘의 감정 날씨</p>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@ const Index = () => {
               onClick={() => setActiveTab('write')}
               className="flex-1 rounded-xl text-sm"
             >
-              기분 기록
+              감정 기록
             </Button>
             <Button
               variant={activeTab === 'list' ? 'default' : 'ghost'}

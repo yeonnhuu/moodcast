@@ -24,7 +24,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
 
   const handleSave = () => {
     if (!text.trim()) {
-      alert('기분 내용을 입력해주세요.');
+      alert('감정 내용을 입력해주세요.');
       return;
     }
 
@@ -53,17 +53,17 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
       <Card className="bg-white/70 backdrop-blur-md border-0 shadow-lg">
         <CardHeader className="text-center pb-4">
           <CardTitle className="text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            지금 기분은 어떠신가요?
+            지금 감정은 어떠신가요?
           </CardTitle>
-          <p className="text-sm text-gray-600">오늘의 기분 날씨를 기록해보세요</p>
+          <p className="text-sm text-gray-600">오늘의 감정 날씨를 기록해보세요</p>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 기분 텍스트 입력 */}
+          {/* 감정 텍스트 입력 */}
           <div>
-            <Label htmlFor="mood-text" className="text-gray-700 font-medium">기분 이야기</Label>
+            <Label htmlFor="mood-text" className="text-gray-700 font-medium">감정 이야기</Label>
             <Textarea
               id="mood-text"
-              placeholder="지금 느끼는 기분을 자유롭게 적어보세요..."
+              placeholder="지금 느끼는 감정을 자유롭게 적어보세요..."
               value={text}
               onChange={(e) => setText(e.target.value)}
               maxLength={500}
@@ -78,7 +78,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
 
           {/* 감정 태그 선택 - 새로운 버튼 스타일 */}
           <div>
-            <Label className="text-gray-700 font-medium">기분 종류</Label>
+            <Label className="text-gray-700 font-medium">감정 종류</Label>
             <div className="grid grid-cols-2 gap-3 mt-3">
               {emotionTags.map((tag) => (
                 <button
@@ -103,7 +103,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
 
           {/* 감정 강도 선택 */}
           <div>
-            <Label className="text-gray-700 font-medium">기분 강도: {intensity}</Label>
+            <Label className="text-gray-700 font-medium">감정 강도: {intensity}</Label>
             <div className="mt-3 bg-white/50 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-gray-500">약함</span>
@@ -130,7 +130,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
             </div>
           </div>
 
-          {/* 기분 날씨 미리보기 */}
+          {/* 감정 날씨 미리보기 */}
           <WeatherImageDisplay emotionTag={emotionTag} intensity={intensity} />
 
           {/* 저장 버튼 */}
@@ -147,7 +147,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
                 onClick={() => setShowPositiveChat(true)}
                 className="flex-1 border-blue-300 text-blue-600 hover:bg-blue-50"
               >
-                기분 다독이기
+                감정 다독이기
               </Button>
             )}
           </div>

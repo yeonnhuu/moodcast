@@ -14,12 +14,14 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
     return (
       <Card className="bg-white/70 backdrop-blur-md border-0 shadow-lg">
         <CardContent className="text-center py-16">
-          <div className="text-8xl mb-6 opacity-50">🌤️</div>
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-200 opacity-50 flex items-center justify-center">
+            <span className="text-4xl">🌤️</span>
+          </div>
           <h3 className="text-xl font-semibold text-gray-600 mb-2">
             아직 기록된 날씨가 없어요
           </h3>
           <p className="text-gray-500 text-sm">
-            첫 번째 기분 날씨를 기록해보세요!
+            첫 번째 감정 날씨를 기록해보세요!
           </p>
         </CardContent>
       </Card>
@@ -30,7 +32,7 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          기분 날씨 히스토리
+          감정 날씨 히스토리
         </h2>
         <span className="text-sm text-gray-500 bg-white/50 px-3 py-1 rounded-full">
           총 {entries.length}일
@@ -46,8 +48,12 @@ const MoodList: React.FC<MoodListProps> = ({ entries }) => {
                 <div className="absolute inset-0 bg-black/20"></div>
                 <div className="relative z-10 p-6">
                   <div className="flex items-start gap-4">
-                    <div className="text-5xl filter drop-shadow-lg">
-                      {entry.weatherImage}
+                    <div className="w-16 h-16 rounded-full overflow-hidden shadow-lg flex-shrink-0">
+                      <img 
+                        src={entry.weatherImage} 
+                        alt="감정 날씨"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
