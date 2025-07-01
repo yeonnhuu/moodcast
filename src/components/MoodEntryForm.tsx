@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { MoodEntry, EmotionTag } from "@/types/mood";
 import WeatherImageDisplay from "./WeatherImageDisplay";
 import PositiveMessageChat from "./PositiveMessageChat";
@@ -77,25 +76,29 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
             </div>
           </div>
 
-          {/* 감정 태그 선택 */}
+          {/* 감정 태그 선택 - 새로운 버튼 스타일 */}
           <div>
             <Label className="text-gray-700 font-medium">기분 종류</Label>
-            <RadioGroup
-              value={emotionTag}
-              onValueChange={(value) => setEmotionTag(value as EmotionTag)}
-              className="mt-3"
-            >
-              <div className="grid grid-cols-2 gap-3">
-                {emotionTags.map((tag) => (
-                  <div key={tag} className="flex items-center space-x-2 bg-white/50 rounded-lg p-3 hover:bg-white/70 transition-colors">
-                    <RadioGroupItem value={tag} id={tag} className="text-blue-500" />
-                    <Label htmlFor={tag} className="text-sm font-medium cursor-pointer flex-1">
-                      {getEmotionEmoji(tag)} {tag}
-                    </Label>
+            <div className="grid grid-cols-2 gap-3 mt-3">
+              {emotionTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setEmotionTag(tag)}
+                  className={`relative p-4 rounded-2xl transition-all duration-200 transform hover:scale-105 ${
+                    emotionTag === tag 
+                      ? 'ring-2 ring-white ring-offset-2 shadow-lg scale-105' 
+                      : 'hover:shadow-md'
+                  } ${getEmotionGradient(tag)}`}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-2xl">{getEmotionWeatherIcon(tag)}</div>
+                    <span className="text-white font-medium text-sm drop-shadow-sm">
+                      {tag}
+                    </span>
                   </div>
-                ))}
-              </div>
-            </RadioGroup>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* 감정 강도 선택 */}
@@ -163,19 +166,34 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ onSave }) => {
   );
 };
 
-// 감정별 이모지 매핑
-const getEmotionEmoji = (emotion: EmotionTag): string => {
-  const emojiMap = {
-    '기쁨': '😊',
-    '슬픔': '😢', 
-    '분노': '😡',
-    '외로움': '😔',
-    '불안': '😰',
-    '무기력': '😴',
-    '평온': '😌',
-    '설렘': '🥰'
+// 감정별 그라디언트 배경
+const getEmotionGradient = (emotion: EmotionTag): string => {
+  const gradients = {
+    '기쁨': 'bg-gradient-to-br from-yellow-400 to-orange-400',
+    '슬픔': 'bg-gradient-to-br from-gray-400 to-blue-500',
+    '분노': 'bg-gradient-to-br from-red-500 to-purple-500',
+    '외로움': 'bg-gradient-to-br from-gray-500 to-blue-400',
+    '불안': 'bg-gradient-to-br from-purple-400 to-gray-500',
+    '무기력': 'bg-gradient-to-br from-gray-600 to-gray-400',
+    '평온': 'bg-gradient-to-br from-green-400 to-blue-400',
+    '설렘': 'bg-gradient-to-br from-pink-400 to-purple-400'
   };
-  return emojiMap[emotion] || '😐';
+  return gradients[emotion] || 'bg-gradient-to-br from-gray-400 to-gray-500';
+};
+
+// 감정별 날씨 아이콘
+const getEmotionWeatherIcon = (emotion: EmotionTag): string => {
+  const weatherIcons = {
+    '기쁨': '☀️',
+    '슬픔': '🌧️',
+    '분노': '⛈️',
+    '외로움': '🌫️',
+    '불안': '🌪️',
+    '무기력': '☁️',
+    '평온': '🌤️',
+    '설렘': '🌈'
+  };
+  return weatherIcons[emotion] || '☀️';
 };
 
 export default MoodEntryForm;
