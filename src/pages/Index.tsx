@@ -5,28 +5,139 @@ import { Button } from "@/components/ui/button";
 import MoodEntryForm from "@/components/MoodEntryForm";
 import MoodList from "@/components/MoodList";
 import TodayMoodcast from "@/components/TodayMoodcast";
-import { MoodEntry } from "@/types/mood";
+import StreakCounter from "@/components/StreakCounter";
+import { MoodEntry, UserStreak, EmotionCharacter, CustomEmotion } from "@/types/mood";
 
 const Index = () => {
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
   const [activeTab, setActiveTab] = useState<'today' | 'write' | 'list'>('today');
   const [todayMood, setTodayMood] = useState<MoodEntry | null>(null);
+  const [userStreak, setUserStreak] = useState<UserStreak>({
+    currentStreak: 0,
+    longestStreak: 0,
+    lastEntryDate: null,
+  });
+  const [emotionCharacters, setEmotionCharacters] = useState<EmotionCharacter[]>([]);
+  const [customEmotions, setCustomEmotions] = useState<CustomEmotion[]>([]);
 
+  // Initialize emotion characters
   useEffect(() => {
-    // 오늘의 마지막 감정 기록을 가져오기
+    const defaultEmotions = ['기쁨', '슬픔', '분노', '외로움', '불안', '무기력', '평온', '설렘'];
+    const defaultCharacters = defaultEmotions.map(emotion => ({
+      emotionTag: emotion,
+      level: 1,
+      experiencePoints: 0,
+      appearance: getEmotionCharacter(emotion),
+    }));
+    setEmotionCharacters(defaultCharacters);
+  }, []);
+
+  // Update streak and today's mood
+  useEffect(() => {
     const today = new Date().toDateString();
     const todayEntries = moodEntries.filter(entry => 
       entry.createdAt.toDateString() === today
     );
+    
     if (todayEntries.length > 0) {
       setTodayMood(todayEntries[0]);
+      updateStreak(todayEntries[0].createdAt);
     }
   }, [moodEntries]);
+
+  const getEmotionCharacter = (emotion: string): string => {
+    const characters = {
+      '기쁨': '🌟',
+      '슬픔': '🌧️',
+      '분노': '⚡',
+      '외로움': '🌙',
+      '불안': '🌪️',
+      '무기력': '😴',
+      '평온': '🕊️',
+      '설렘': '🦋',
+    };
+    return characters[emotion] || '💫';
+  };
+
+  const updateStreak = (entryDate: Date) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    
+    setUserStreak(prev => {
+      const lastEntry = prev.lastEntryDate;
+      const entryDateStr = entryDate.toDateString();
+      const todayStr = today.toDateString();
+      const yesterdayStr = yesterday.toDateString();
+      
+      if (!lastEntry) {
+        return {
+          currentStreak: 1,
+          longestStreak: Math.max(1, prev.longestStreak),
+          lastEntryDate: entryDate,
+        };
+      }
+      
+      const lastEntryStr = lastEntry.toDateString();
+      
+      if (entryDateStr === todayStr && lastEntryStr === yesterdayStr) {
+        const newStreak = prev.currentStreak + 1;
+        return {
+          currentStreak: newStreak,
+          longestStreak: Math.max(newStreak, prev.longestStreak),
+          lastEntryDate: entryDate,
+        };
+      } else if (entryDateStr === todayStr && lastEntryStr !== todayStr) {
+        return {
+          currentStreak: 1,
+          longestStreak: prev.longestStreak,
+          lastEntryDate: entryDate,
+        };
+      }
+      
+      return prev;
+    });
+  };
+
+  const updateEmotionCharacter = (emotionTag: string, intensity: number) => {
+    setEmotionCharacters(prev => 
+      prev.map(char => {
+        if (char.emotionTag === emotionTag) {
+          const newXP = char.experiencePoints + (intensity * 20);
+          const newLevel = Math.floor(newXP / 100) + 1;
+          return {
+            ...char,
+            experiencePoints: newXP,
+            level: newLevel,
+          };
+        }
+        return char;
+      })
+    );
+  };
 
   const handleMoodSave = (entry: MoodEntry) => {
     setMoodEntries(prev => [entry, ...prev]);
     setTodayMood(entry);
     setActiveTab('today');
+    
+    // Update character if it's a default emotion
+    if (!entry.isCustomEmotion) {
+      updateEmotionCharacter(entry.emotionTag, entry.intensity);
+    }
+  };
+
+  const handleCustomEmotionCreate = (emotion: CustomEmotion) => {
+    setCustomEmotions(prev => [...prev, emotion]);
+    
+    // Add character for this custom emotion
+    const newCharacter: EmotionCharacter = {
+      emotionTag: emotion.name,
+      level: 1,
+      experiencePoints: 0,
+      appearance: emotion.icon,
+    };
+    setEmotionCharacters(prev => [...prev, newCharacter]);
   };
 
   const handleMoodUpdate = (updatedEntry: MoodEntry) => {
@@ -36,7 +147,6 @@ const Index = () => {
       )
     );
     
-    // 오늘의 감정인 경우 업데이트
     const today = new Date().toDateString();
     if (updatedEntry.createdAt.toDateString() === today) {
       setTodayMood(updatedEntry);
@@ -46,7 +156,6 @@ const Index = () => {
   const handleMoodDelete = (entryId: string) => {
     setMoodEntries(prev => prev.filter(entry => entry.id !== entryId));
     
-    // 삭제된 항목이 오늘의 감정인 경우 초기화
     if (todayMood?.id === entryId) {
       const today = new Date().toDateString();
       const remainingTodayEntries = moodEntries.filter(entry => 
@@ -58,20 +167,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
-      {/* 헤더 - 날씨 앱 스타일 */}
+      {/* Enhanced Header */}
       <div className="bg-white/70 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-md mx-auto px-4 py-3">
           <div className="text-center">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Moodcast
             </h1>
-            <p className="text-xs text-gray-600 mt-1">오늘의 감정 날씨</p>
+            <p className="text-xs text-gray-600 mt-1">감정을 기록하고 성장하세요</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-md mx-auto px-4 py-6">
-        {/* 탭 네비게이션 - 날씨 앱 스타일 */}
+        {/* Streak Counter */}
+        <StreakCounter streak={userStreak} />
+
+        {/* Tab Navigation */}
         <div className="mb-6">
           <div className="flex bg-white/50 backdrop-blur-sm rounded-2xl p-1 shadow-sm">
             <Button
@@ -93,21 +205,27 @@ const Index = () => {
               onClick={() => setActiveTab('list')}
               className="flex-1 rounded-xl text-sm"
             >
-              날씨 히스토리
+              히스토리
             </Button>
           </div>
         </div>
 
-        {/* 컨텐츠 영역 */}
+        {/* Content */}
         {activeTab === 'today' && (
           <TodayMoodcast 
             todayMood={todayMood} 
             onWriteClick={() => setActiveTab('write')}
+            emotionCharacters={emotionCharacters}
           />
         )}
         
         {activeTab === 'write' && (
-          <MoodEntryForm onSave={handleMoodSave} />
+          <MoodEntryForm 
+            onSave={handleMoodSave}
+            emotionCharacters={emotionCharacters}
+            customEmotions={customEmotions}
+            onCreateCustomEmotion={handleCustomEmotionCreate}
+          />
         )}
         
         {activeTab === 'list' && (
