@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MoodEntry } from "@/types/mood";
+import { MoodEntry, EmotionTag } from "@/types/mood";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Edit, Trash2 } from 'lucide-react';
@@ -75,7 +75,7 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
       
       {entries.map((entry) => {
         const gradientClass = getWeatherGradient(entry.emotionTag);
-        const emotionIcon = getEmotionIcon(entry.emotionTag);
+        const emotionIcon = getEmotionIcon(entry.emotionTag as EmotionTag);
         
         return (
           <Card key={entry.id} className={`${gradientClass} border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden`}>

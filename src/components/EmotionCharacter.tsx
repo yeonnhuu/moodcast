@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { EmotionCharacter } from "@/types/mood";
+import type { EmotionCharacter } from "@/types/mood";
 
 interface EmotionCharacterProps {
   character: EmotionCharacter;
   isActive?: boolean;
 }
 
-const EmotionCharacter: React.FC<EmotionCharacterProps> = ({ character, isActive = false }) => {
+const EmotionCharacterComponent: React.FC<EmotionCharacterProps> = ({ character, isActive = false }) => {
   const getCharacterSize = (level: number): string => {
     if (level <= 2) return 'w-12 h-12 text-2xl';
     if (level <= 5) return 'w-16 h-16 text-3xl';
@@ -42,4 +42,4 @@ const EmotionCharacter: React.FC<EmotionCharacterProps> = ({ character, isActive
   );
 };
 
-export default EmotionCharacter;
+export default EmotionCharacterComponent;

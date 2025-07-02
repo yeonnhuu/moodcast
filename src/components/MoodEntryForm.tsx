@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MoodEntry, EmotionTag, EmotionCharacter, CustomEmotion } from "@/types/mood";
+import { MoodEntry, EmotionTag, CustomEmotion } from "@/types/mood";
+import type { EmotionCharacter } from "@/types/mood";
 import WeatherImageDisplay from "./WeatherImageDisplay";
 import PositiveMessageChat from "./PositiveMessageChat";
-import EmotionCharacter from "./EmotionCharacter";
+import EmotionCharacterComponent from "./EmotionCharacter";
 import CustomEmotionCreator from "./CustomEmotionCreator";
 import { getWeatherImage, isNegativeEmotion, getEmotionIcon } from "@/utils/moodUtils";
 import { Sparkles, Heart } from 'lucide-react';
@@ -171,7 +172,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
                   >
                     <div className="flex flex-col items-center gap-2">
                       {character && (
-                        <EmotionCharacter 
+                        <EmotionCharacterComponent 
                           character={character} 
                           isActive={emotionTag === tag && !isCustomEmotion}
                         />
@@ -199,7 +200,7 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
                   >
                     <div className="flex flex-col items-center gap-2">
                       {character && (
-                        <EmotionCharacter 
+                        <EmotionCharacterComponent 
                           character={character} 
                           isActive={emotionTag === emotion.name && isCustomEmotion}
                         />

@@ -2,9 +2,10 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MoodEntry, EmotionCharacter } from "@/types/mood";
+import { MoodEntry } from "@/types/mood";
+import type { EmotionCharacter } from "@/types/mood";
 import { getWeatherDescription, getEmotionIcon } from "@/utils/moodUtils";
-import EmotionCharacter from "./EmotionCharacter";
+import EmotionCharacterComponent from "./EmotionCharacter";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Sunrise, Cloud, Star } from 'lucide-react';
@@ -74,7 +75,7 @@ const TodayMoodcast: React.FC<TodayMoodcastProps> = ({
             <div className="flex gap-2 overflow-x-auto pb-2">
               {emotionCharacters.slice(0, 6).map((character) => (
                 <div key={character.emotionTag} className="flex-shrink-0">
-                  <EmotionCharacter character={character} />
+                  <EmotionCharacterComponent character={character} />
                 </div>
               ))}
             </div>
@@ -102,7 +103,7 @@ const TodayMoodcast: React.FC<TodayMoodcastProps> = ({
           {/* Character Display */}
           {emotionCharacter && (
             <div className="mb-4">
-              <EmotionCharacter character={emotionCharacter} isActive={true} />
+              <EmotionCharacterComponent character={emotionCharacter} isActive={true} />
             </div>
           )}
           

@@ -18,7 +18,7 @@ const emotionTags: EmotionTag[] = ['기쁨', '슬픔', '분노', '외로움', '�
 
 const MoodEditDialog: React.FC<MoodEditDialogProps> = ({ entry, open, onClose, onSave }) => {
   const [text, setText] = useState(entry.text);
-  const [emotionTag, setEmotionTag] = useState<EmotionTag>(entry.emotionTag);
+  const [emotionTag, setEmotionTag] = useState<EmotionTag | string>(entry.emotionTag);
   const [intensity, setIntensity] = useState(entry.intensity);
 
   const handleSave = () => {
