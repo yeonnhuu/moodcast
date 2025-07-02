@@ -1,73 +1,131 @@
-# Welcome to your Lovable project
+# 🌤️ Moodcast
 
-## Project info
+> 감정을 기록하고, 긍정하는 감정일기 서비스
+> 
 
-**URL**: https://lovable.dev/projects/1b340d41-e7a5-4927-8305-dffe316a71ea
+[배포 링크](https://moodcast.lovable.app/)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 💡 기능 1: 감정일기 기록하기
 
-**Use Lovable**
+### ✅ 기능 설명
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1b340d41-e7a5-4927-8305-dffe316a71ea) and start prompting.
+사용자는 하루 동안 느낀 감정을 자유롭게 기록할 수 있습니다.
 
-Changes made via Lovable will be committed automatically to this repo.
+감정 텍스트, 감정 태그, 감정 강도(1~5)를 입력하면, 이에 맞는 **날씨 모티브 이미지**가 자동 연동되어 시각적으로 감정을 표현합니다.
 
-**Use your preferred IDE**
+### ✅ 사용자 스토리
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+“사용자로서, 하루 동안의 감정을 기록하고 싶습니다. 그래야 내 감정을 스스로 정리하고, 되돌아볼 수 있습니다.”
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### ✅ 인수 조건
 
-Follow these steps:
+- **Given**: 사용자가 로그인한 상태에서 감정일기 기록 화면에 진입했을 때
+- **When**: 감정 텍스트, 감정 태그, 감정 강도를 입력하고 ‘저장’ 버튼을 누르면
+- **Then**:
+    - 감정일기가 텍스트, 태그, 강도 정보를 포함하여 저장된다.
+    - 감정 태그 및 강도에 따라 **날씨 이미지**가 자동 생성되어 일기와 함께 저장된다.
+    - ‘내 일기’ 목록에서 감정 시각 이미지와 함께 일기를 확인할 수 있다.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 🎨 감정-날씨 매핑 예시
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+| 감정 태그 | 감정 강도 | 시각 이미지 |
+| --- | --- | --- |
+| 슬픔 | 4~5 | 흐린 비구름 배경 |
+| 기쁨 | 1~2 | 따스한 햇살 하늘 |
+| 분노 | 5 | 천둥번개 하늘 |
+| 외로움 | 3~4 | 안개 낀 회색 배경 |
+| 불안 | 4~5 | 거센 바람 풍경 |
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 💡 기능 2: 감정일기 긍정하기
 
-**Edit a file directly in GitHub**
+### ✅ 기능 설명
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+부정적인 감정이 포함된 일기에 대해, 챗봇이 평가 없는 **공감 중심의 메시지**를 제공합니다.
 
-**Use GitHub Codespaces**
+이 메시지는 사용자가 감정을 그대로 받아들이고 스스로를 다독일 수 있도록 돕습니다.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### ✅ 사용자 스토리
 
-## What technologies are used for this project?
+“사용자로서, 내가 느끼는 부정적인 감정을 부드럽게 재해석하고 싶습니다. 그래야 감정을 부정하지 않고, 있는 그대로 받아들이고 긍정할 수 있습니다.”
 
-This project is built with:
+### ✅ 인수 조건
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Given**: 감정일기 작성 후, 부정적 감정이 포함된 경우 ‘감정 긍정하기’ 버튼이 표시될 때
+- **When**: 사용자가 해당 버튼을 누르면
+- **Then**:
+    - 챗봇이 공감 기반의 메시지를 보여준다.
+    - 감정의 옳고 그름을 판단하지 않고, 감정 맥락을 존중한다.
+    - 메시지를 일기 하단에 저장하거나 대화만 진행할 수 있다 (선택 가능).
 
-## How can I deploy this project?
+### 💬 챗봇 응답 예시
 
-Simply open [Lovable](https://lovable.dev/projects/1b340d41-e7a5-4927-8305-dffe316a71ea) and click on Share -> Publish.
+| 감정 | 긍정 메시지 |
+| --- | --- |
+| 외로움 | “외로움을 느낄 수 있다는 건, 연결을 원하는 따뜻한 마음이 있다는 뜻이에요.” |
+| 분노 | “화가 났다는 건, 당신에게 그만큼 중요한 가치가 있다는 뜻일지도 몰라요.” |
+| 무기력 | “오늘은 아무것도 하지 않아도 괜찮아요. 당신이 멈춘 건, 회복의 시작일 수 있어요.” |
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 👤 페르소나 1: 감정을 자유롭게 표현하고 싶은 대학생 - 정다은 (22세)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **직업**: 대학 3학년 / 심리학 전공
+- **라이프스타일**: 혼자 있는 시간 많음, 밤에 일기 쓰며 감정 정리
+- **목표**: 감정을 분석하지 않고도 표현하고 싶음
+- **니즈**: 판단받지 않는 감정 기록 공간
+- **페인 포인트**: 감정을 해석하려다 오히려 피로해짐
+- **사용자 스토리**: “대학생으로서, 감정을 꼭 분석하지 않아도 편하게 기록하고 싶습니다. 그래야 내 감정을 억누르지 않고 흘려보낼 수 있습니다.”
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### 📌 사용자 시나리오
+
+> "밤에 감정을 흘려 쓰고 싶은 순간"
+> 
+1. 자기 전, Moodcast 앱 실행
+2. 슬픔 태그 + 강도 4 선택, 자유롭게 감정 작성
+3. 저장 → 흐린 비구름 이미지와 함께 일기 저장
+4. 분석 없이 감정을 흘려보내며 가벼워진 마음
+
+---
+
+## 👤 페르소나 2: 감정을 다독이고 싶은 직장인 - 박성우 (30세)
+
+- **직업**: 출판사 마케터
+- **라이프스타일**: 반복된 일상 속 무기력함, SNS보단 비공개 공간 선호
+- **목표**: 부정적인 감정을 억누르지 않고 따뜻하게 받아들이고 싶음
+- **니즈**: 비판 없이 감정을 인정받고 싶음
+- **페인 포인트**: 감정을 자책하고 무가치하게 여기는 습관
+- **사용자 스토리**: “직장인으로서, 저는 부정적인 감정을 자책하지 않고, 따뜻하게 받아들이고 싶습니다. 그래야 내 감정을 긍정하며 다음으로 나아갈 수 있습니다.”
+
+### 📌 사용자 시나리오
+
+> "무기력한 하루 후 감정 긍정하기"
+> 
+1. 무기력한 감정을 일기로 작성 (강도 4)
+2. 저장 후 ‘감정 긍정하기’ 버튼 확인
+3. 챗봇: “지금 멈춰 있는 건, 회복의 시작일 수 있어요.”
+4. 해당 메시지를 일기 하단에 저장
+
+---
+
+## 💎 핵심 가치 제안
+
+1. **공감 중심 기록**: 감정을 비판하거나 해석하지 않음
+2. **감정 강도 기록**: 같은 감정도 세기를 기록해 뉘앙스 반영
+3. **시각적 치유 요소**: 감정에 어울리는 날씨 이미지로 감정 표현
+4. **긍정 메시지 제공**: 감정을 바꾸려 하지 않고 따뜻하게 감싸줌
+
+---
+
+## 🛠️ 핵심 기능 요약
+
+- 텍스트 기반 감정일기 작성
+- 감정 태그 + 강도 선택 UI
+- 감정 날씨 이미지 자동 연동
+- 감정일기 목록에서 시각 이미지 포함 일기 열람
+- 감정 긍정하기 버튼 (조건부 노출)
+- 챗봇 공감 메시지 응답 (Mocking 기반)
+- 메시지 저장 여부 사용자 선택 가능
