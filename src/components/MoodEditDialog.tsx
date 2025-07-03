@@ -4,8 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MoodEntry, EmotionTag } from "@/types/mood";
+import { MoodEntry, EmotionTag, VisibilityLevel } from "@/types/mood";
 import { getEmotionIcon } from "@/utils/moodUtils";
+import VisibilitySelector from "./VisibilitySelector";
 
 interface MoodEditDialogProps {
   entry: MoodEntry;
@@ -20,6 +21,7 @@ const MoodEditDialog: React.FC<MoodEditDialogProps> = ({ entry, open, onClose, o
   const [text, setText] = useState(entry.text);
   const [emotionTag, setEmotionTag] = useState<EmotionTag | string>(entry.emotionTag);
   const [intensity, setIntensity] = useState(entry.intensity);
+  const [visibility, setVisibility] = useState<VisibilityLevel>(entry.visibility || 'private');
 
   const handleSave = () => {
     const updatedEntry: MoodEntry = {
@@ -27,6 +29,7 @@ const MoodEditDialog: React.FC<MoodEditDialogProps> = ({ entry, open, onClose, o
       text: text.trim(),
       emotionTag,
       intensity,
+      visibility,
     };
     onSave(updatedEntry);
     onClose();
@@ -34,7 +37,7 @@ const MoodEditDialog: React.FC<MoodEditDialogProps> = ({ entry, open, onClose, o
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>감정 일기 수정</DialogTitle>
         </DialogHeader>
@@ -101,6 +104,11 @@ const MoodEditDialog: React.FC<MoodEditDialogProps> = ({ entry, open, onClose, o
               </div>
             </div>
           </div>
+
+          <VisibilitySelector 
+            visibility={visibility}
+            onVisibilityChange={setVisibility}
+          />
         </div>
 
         <DialogFooter>

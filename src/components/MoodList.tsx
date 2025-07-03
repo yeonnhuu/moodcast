@@ -2,11 +2,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MoodEntry, EmotionTag } from "@/types/mood";
+import { MoodEntry, EmotionTag, ReactionType } from "@/types/mood";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Lock, Users, Globe } from 'lucide-react';
 import MoodEditDialog from './MoodEditDialog';
+import ReactionButtons from './ReactionButtons';
 import { getEmotionIcon } from "@/utils/moodUtils";
 import {
   AlertDialog,
@@ -62,6 +63,57 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
     }
   };
 
+  const handleReaction = (entryId: string, reactionType: ReactionType) => {
+    const entry = entries.find(e => e.id === entryId);
+    if (!entry) return;
+
+    const currentUserId = 'current-user';
+    const existingReaction = entry.reactions.find(
+      r => r.type === reactionType && r.userId === currentUserId
+    );
+
+    let updatedReactions;
+    if (existingReaction) {
+      // Remove reaction
+      updatedReactions = entry.reactions.filter(r => r.id !== existingReaction.id);
+    } else {
+      // Add reaction
+      updatedReactions = [
+        ...entry.reactions,
+        {
+          id: Date.now().toString(),
+          type: reactionType,
+          userId: currentUserId,
+          userName: '나',
+          createdAt: new Date()
+        }
+      ];
+    }
+
+    onUpdate({
+      ...entry,
+      reactions: updatedReactions
+    });
+  };
+
+  const getVisibilityIcon = (visibility: string) => {
+    switch (visibility) {
+      case 'private': return <Lock className="w-3 h-3" />;
+      case 'friends': return <Users className="w-3 h-3" />;
+      case 'public': return <Globe className="w-3 h-3" />;
+      default: return <Lock className="w-3 h-3" />;
+    }
+  };
+
+  const getVisibilityLabel = (visibility: string) => {
+    switch (visibility) {
+      case 'private': return '나만 보기';
+      case 'friends': return '친구 공유';
+      case 'public': return '모두 공개';
+      default: return '나만 보기';
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
@@ -105,6 +157,12 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
                               />
                             ))}
                           </div>
+                          <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
+                            {getVisibilityIcon(entry.visibility)}
+                            <span className="text-xs text-white">
+                              {getVisibilityLabel(entry.visibility)}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-white/80 text-xs">
@@ -136,10 +194,22 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
                       </p>
                       
                       {entry.positiveMessage && (
-                        <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-3 mt-3">
+                        <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg p-3 mb-3">
                           <p className="text-white/90 text-xs italic">
                             💙 {entry.positiveMessage}
                           </p>
+                        </div>
+                      )}
+
+                      {/* Reactions - only show for non-private entries */}
+                      {entry.visibility !== 'private' && (
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                          <ReactionButtons
+                            reactions={entry.reactions}
+                            onReact={(reactionType) => handleReaction(entry.id, reactionType)}
+                            currentUserId="current-user"
+                            showReactors={entry.visibility === 'friends'}
+                          />
                         </div>
                       )}
                     </div>

@@ -1,12 +1,14 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MoodEntry, EmotionTag, CustomEmotion } from "@/types/mood";
+import { MoodEntry, EmotionTag, CustomEmotion, VisibilityLevel } from "@/types/mood";
 import type { EmotionCharacter } from "@/types/mood";
 import WeatherImageDisplay from "./WeatherImageDisplay";
-import PositiveMessageChat from "./PositiveMessageChat";
+import EmotionalSupportChat from "./EmotionalSupportChat";
+import VisibilitySelector from "./VisibilitySelector";
 import EmotionCharacterComponent from "./EmotionCharacter";
 import CustomEmotionCreator from "./CustomEmotionCreator";
 import { getWeatherImage, isNegativeEmotion, getEmotionIcon } from "@/utils/moodUtils";
@@ -30,14 +32,21 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
   const [text, setText] = useState('');
   const [emotionTag, setEmotionTag] = useState<EmotionTag | string>('기쁨');
   const [intensity, setIntensity] = useState(3);
-  const [showPositiveChat, setShowPositiveChat] = useState(false);
-  const [positiveMessage, setPositiveMessage] = useState<string>('');
+  const [visibility, setVisibility] = useState<VisibilityLevel>('private');
+  const [showSupportChat, setShowSupportChat] = useState(false);
+  const [supportMessage, setSupportMessage] = useState<string>('');
   const [isCustomEmotion, setIsCustomEmotion] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
   const handleSave = () => {
     if (!text.trim()) {
       alert('감정 내용을 입력해주세요.');
+      return;
+    }
+
+    // Check if we should show emotional support
+    if (isNegativeEmotion(emotionTag as EmotionTag) && intensity >= 3 && !showSupportChat) {
+      setShowSupportChat(true);
       return;
     }
 
@@ -51,51 +60,39 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
       emotionTag,
       intensity,
       weatherImage: getWeatherImage(emotionTag as EmotionTag, intensity),
-      positiveMessage: positiveMessage || undefined,
+      positiveMessage: supportMessage || undefined,
       createdAt: new Date(),
       isCustomEmotion,
       customEmotionData,
+      visibility,
+      reactions: [],
+      userId: 'current-user',
+      userName: '나'
     };
 
     // Show success animation
     setShowSuccessAnimation(true);
     setTimeout(() => setShowSuccessAnimation(false), 2000);
 
-    // Check if we should show positive chat
-    if (isNegativeEmotion(emotionTag as EmotionTag) && intensity >= 3) {
-      setShowPositiveChat(true);
-    } else {
-      onSave(entry);
-      resetForm();
-    }
+    onSave(entry);
+    resetForm();
   };
 
   const resetForm = () => {
     setText('');
     setIntensity(3);
-    setShowPositiveChat(false);
-    setPositiveMessage('');
+    setVisibility('private');
+    setShowSupportChat(false);
+    setSupportMessage('');
     setIsCustomEmotion(false);
     setEmotionTag('기쁨');
   };
 
-  const handlePositiveMessageSave = (message: string) => {
-    setPositiveMessage(message);
-    const entry: MoodEntry = {
-      id: Date.now().toString(),
-      text: text.trim(),
-      emotionTag,
-      intensity,
-      weatherImage: getWeatherImage(emotionTag as EmotionTag, intensity),
-      positiveMessage: message,
-      createdAt: new Date(),
-      isCustomEmotion,
-      customEmotionData: isCustomEmotion 
-        ? customEmotions.find(e => e.name === emotionTag)
-        : undefined,
-    };
-    onSave(entry);
-    resetForm();
+  const handleSupportMessageAccept = (message: string) => {
+    setSupportMessage(message);
+    setShowSupportChat(false);
+    // Continue with saving
+    setTimeout(() => handleSave(), 100);
   };
 
   const getEmotionCharacter = (emotion: string): EmotionCharacter | undefined => {
@@ -118,10 +115,23 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">기록 완료!</h3>
-              <p className="text-gray-600">감정이 성공적으로 저장되었어요</p>
+              <p className="text-gray-600">{
+                visibility === 'public' ? '모든 사람이 볼 수 있게 공개되었어요' :
+                visibility === 'friends' ? '친구들과 공유되었어요' :
+                '개인 일기로 안전하게 저장되었어요'
+              }</p>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Emotional Support Chat */}
+      {showSupportChat && (
+        <EmotionalSupportChat
+          emotionTag={emotionTag as EmotionTag}
+          onMessageAccept={handleSupportMessageAccept}
+          onClose={() => setShowSupportChat(false)}
+        />
       )}
 
       {/* Main Input Card */}
@@ -247,6 +257,12 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
             </div>
           </div>
 
+          {/* Visibility Settings */}
+          <VisibilitySelector 
+            visibility={visibility}
+            onVisibilityChange={setVisibility}
+          />
+
           {/* Weather Preview */}
           <WeatherImageDisplay emotionTag={emotionTag as EmotionTag} intensity={intensity} />
 
@@ -260,15 +276,6 @@ const MoodEntryForm: React.FC<MoodEntryFormProps> = ({
           </Button>
         </CardContent>
       </Card>
-
-      {/* Positive Message Chat */}
-      {showPositiveChat && (
-        <PositiveMessageChat
-          emotionTag={emotionTag as EmotionTag}
-          onMessageSave={handlePositiveMessageSave}
-          onClose={() => setShowPositiveChat(false)}
-        />
-      )}
     </div>
   );
 };
