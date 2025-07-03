@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -124,6 +123,17 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
     }, {});
 
     return { totalReactions, reactionCounts };
+  };
+
+  // Helper function to get reaction emoji
+  const getReactionEmoji = (reactionType: string): string => {
+    const emojis: Record<string, string> = {
+      empathy: '🤝',
+      heart: '❤️',
+      hug: '🫂',
+      support: '💪'
+    };
+    return emojis[reactionType] || '👍';
   };
 
   return (
@@ -287,17 +297,6 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
       </AlertDialog>
     </div>
   );
-};
-
-// Helper function to get reaction emoji
-const getReactionEmoji = (reactionType: string): string => {
-  const emojis = {
-    empathy: '🤝',
-    heart: '❤️',
-    hug: '🫂',
-    support: '💪'
-  };
-  return emojis[reactionType] || '👍';
 };
 
 // 감정에 따른 그라디언트 배경
