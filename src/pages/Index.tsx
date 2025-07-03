@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users } from 'lucide-react';
+import { Users, Calendar, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import MoodEntryForm from "@/components/MoodEntryForm";
 import MoodList from "@/components/MoodList";
@@ -187,14 +188,35 @@ const Index = () => {
               </h1>
               <p className="text-xs text-gray-600 mt-1">감정을 기록하고 성장하세요</p>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/shared-diaries')}
-              className="p-2 hover:bg-blue-100"
-            >
-              <Users className="w-5 h-5 text-blue-600" />
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/calendar')}
+                className="p-2 hover:bg-green-100"
+                title="감정 캘린더"
+              >
+                <Calendar className="w-4 h-4 text-green-600" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/community')}
+                className="p-2 hover:bg-purple-100"
+                title="커뮤니티 피드"
+              >
+                <Globe className="w-4 h-4 text-purple-600" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/shared-diaries')}
+                className="p-2 hover:bg-blue-100"
+                title="친구 일기"
+              >
+                <Users className="w-4 h-4 text-blue-600" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

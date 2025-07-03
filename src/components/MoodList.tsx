@@ -1,12 +1,14 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MoodEntry, EmotionTag, ReactionType } from "@/types/mood";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Edit, Trash2, Lock, Users, Globe, Share2, Heart, Sparkles } from 'lucide-react';
+import { Edit, Trash2, Lock, Users, Globe, Share2, Heart, Sparkles, MessageCircle } from 'lucide-react';
 import MoodEditDialog from './MoodEditDialog';
 import ReactionButtons from './ReactionButtons';
+import CommentSection from './CommentSection';
 import { getEmotionIcon } from "@/utils/moodUtils";
 import {
   AlertDialog,
@@ -28,6 +30,7 @@ interface MoodListProps {
 const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
   const [editingEntry, setEditingEntry] = useState<MoodEntry | null>(null);
   const [deletingEntry, setDeletingEntry] = useState<MoodEntry | null>(null);
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
 
   if (entries.length === 0) {
     return (
@@ -136,6 +139,18 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
     return emojis[reactionType] || '👍';
   };
 
+  const toggleComments = (entryId: string) => {
+    setExpandedComments(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(entryId)) {
+        newSet.delete(entryId);
+      } else {
+        newSet.add(entryId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
@@ -152,6 +167,7 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
         const emotionIcon = getEmotionIcon(entry.emotionTag as EmotionTag);
         const reactionSummary = getReactionSummary(entry.reactions);
         const isShared = entry.visibility !== 'private';
+        const commentsExpanded = expandedComments.has(entry.id);
         
         return (
           <Card key={entry.id} className={`${gradientClass} border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden`}>
@@ -243,7 +259,7 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
                           <div className="flex gap-2 text-xs text-white/80">
                             {Object.entries(reactionSummary.reactionCounts).map(([type, count]) => (
                               <span key={type} className="bg-white/10 px-2 py-1 rounded-full">
-                                {getReactionEmoji(type)} {count}
+                                {getReactionEmoji(type)} {count as number}
                               </span>
                             ))}
                           </div>
@@ -259,6 +275,36 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
                             currentUserId="current-user"
                             showReactors={entry.visibility === 'friends'}
                           />
+                          
+                          {entry.commentsEnabled !== false && (
+                            <div className="mt-3 border-t border-white/20 pt-3">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toggleComments(entry.id)}
+                                className="text-white/80 hover:text-white hover:bg-white/20 text-xs"
+                              >
+                                <MessageCircle className="w-3 h-3 mr-1" />
+                                {commentsExpanded ? '댓글 접기' : '댓글 보기'}
+                              </Button>
+                              
+                              {commentsExpanded && (
+                                <div className="mt-2">
+                                  <CommentSection
+                                    entryId={entry.id}
+                                    comments={entry.comments || []}
+                                    onAddComment={(comment) => {
+                                      const updatedEntry = {
+                                        ...entry,
+                                        comments: [...(entry.comments || []), comment]
+                                      };
+                                      onUpdate(updatedEntry);
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

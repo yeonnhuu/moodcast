@@ -13,6 +13,14 @@ export interface Reaction {
   createdAt: Date;
 }
 
+export interface Comment {
+  id: string;
+  text: string;
+  userId: string;
+  userName: string;
+  createdAt: Date;
+}
+
 export interface CustomEmotion {
   id: string;
   name: string;
@@ -45,6 +53,8 @@ export interface MoodEntry {
   customEmotionData?: CustomEmotion;
   visibility: VisibilityLevel;
   reactions: Reaction[];
+  comments?: Comment[];
+  commentsEnabled?: boolean;
   userId: string;
   userName: string;
 }
