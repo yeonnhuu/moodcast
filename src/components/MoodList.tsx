@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MoodEntry, EmotionTag, ReactionType } from "@/types/mood";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Edit, Trash2, Lock, Users, Globe } from 'lucide-react';
+import { Edit, Trash2, Lock, Users, Globe, Share2, Heart, Sparkles } from 'lucide-react';
 import MoodEditDialog from './MoodEditDialog';
 import ReactionButtons from './ReactionButtons';
 import { getEmotionIcon } from "@/utils/moodUtils";
@@ -114,6 +114,18 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
     }
   };
 
+  const getReactionSummary = (reactions: any[]) => {
+    const totalReactions = reactions.length;
+    if (totalReactions === 0) return null;
+
+    const reactionCounts = reactions.reduce((acc, reaction) => {
+      acc[reaction.type] = (acc[reaction.type] || 0) + 1;
+      return acc;
+    }, {});
+
+    return { totalReactions, reactionCounts };
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
@@ -128,6 +140,8 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
       {entries.map((entry) => {
         const gradientClass = getWeatherGradient(entry.emotionTag);
         const emotionIcon = getEmotionIcon(entry.emotionTag as EmotionTag);
+        const reactionSummary = getReactionSummary(entry.reactions);
+        const isShared = entry.visibility !== 'private';
         
         return (
           <Card key={entry.id} className={`${gradientClass} border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden`}>
@@ -163,6 +177,12 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
                               {getVisibilityLabel(entry.visibility)}
                             </span>
                           </div>
+                          {isShared && (
+                            <div className="flex items-center gap-1 bg-blue-500/30 px-2 py-1 rounded-full">
+                              <Share2 className="w-3 h-3 text-white" />
+                              <span className="text-xs text-white">공유됨</span>
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-white/80 text-xs">
@@ -198,6 +218,25 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
                           <p className="text-white/90 text-xs italic">
                             💙 {entry.positiveMessage}
                           </p>
+                        </div>
+                      )}
+
+                      {/* Reaction Summary for Shared Entries */}
+                      {isShared && reactionSummary && (
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Heart className="w-4 h-4 text-pink-300" />
+                            <span className="text-white/90 text-sm font-medium">
+                              {reactionSummary.totalReactions}개의 반응
+                            </span>
+                          </div>
+                          <div className="flex gap-2 text-xs text-white/80">
+                            {Object.entries(reactionSummary.reactionCounts).map(([type, count]) => (
+                              <span key={type} className="bg-white/10 px-2 py-1 rounded-full">
+                                {getReactionEmoji(type)} {count}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
 
@@ -248,6 +287,17 @@ const MoodList: React.FC<MoodListProps> = ({ entries, onUpdate, onDelete }) => {
       </AlertDialog>
     </div>
   );
+};
+
+// Helper function to get reaction emoji
+const getReactionEmoji = (reactionType: string): string => {
+  const emojis = {
+    empathy: '🤝',
+    heart: '❤️',
+    hug: '🫂',
+    support: '💪'
+  };
+  return emojis[reactionType] || '👍';
 };
 
 // 감정에 따른 그라디언트 배경

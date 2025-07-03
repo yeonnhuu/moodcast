@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import MoodEntryForm from "@/components/MoodEntryForm";
 import MoodList from "@/components/MoodList";
 import TodayMoodcast from "@/components/TodayMoodcast";
@@ -8,9 +10,11 @@ import StreakCounter from "@/components/StreakCounter";
 import { MoodEntry, UserStreak, EmotionCharacter, CustomEmotion } from "@/types/mood";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
   const [activeTab, setActiveTab] = useState<'today' | 'write' | 'list'>('today');
   const [todayMood, setTodayMood] = useState<MoodEntry | null>(null);
+  const [allTodayEntries, setAllTodayEntries] = useState<MoodEntry[]>([]);
   const [userStreak, setUserStreak] = useState<UserStreak>({
     currentStreak: 0,
     longestStreak: 0,
@@ -38,9 +42,17 @@ const Index = () => {
       entry.createdAt.toDateString() === today
     );
     
+    setAllTodayEntries(todayEntries);
+    
     if (todayEntries.length > 0) {
-      setTodayMood(todayEntries[0]);
-      updateStreak(todayEntries[0].createdAt);
+      // Set the most recent entry as today's mood
+      const mostRecent = todayEntries.reduce((latest, current) => 
+        current.createdAt > latest.createdAt ? current : latest
+      );
+      setTodayMood(mostRecent);
+      updateStreak(mostRecent.createdAt);
+    } else {
+      setTodayMood(null);
     }
   }, [moodEntries]);
 
@@ -117,7 +129,6 @@ const Index = () => {
 
   const handleMoodSave = (entry: MoodEntry) => {
     setMoodEntries(prev => [entry, ...prev]);
-    setTodayMood(entry);
     setActiveTab('today');
     
     // Update character if it's a default emotion
@@ -169,11 +180,21 @@ const Index = () => {
       {/* Enhanced Header */}
       <div className="bg-white/70 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-md mx-auto px-4 py-3">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Moodcast
-            </h1>
-            <p className="text-xs text-gray-600 mt-1">감정을 기록하고 성장하세요</p>
+          <div className="flex items-center justify-between">
+            <div className="text-center flex-1">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Moodcast
+              </h1>
+              <p className="text-xs text-gray-600 mt-1">감정을 기록하고 성장하세요</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/shared-diaries')}
+              className="p-2 hover:bg-blue-100"
+            >
+              <Users className="w-5 h-5 text-blue-600" />
+            </Button>
           </div>
         </div>
       </div>
@@ -215,6 +236,7 @@ const Index = () => {
             todayMood={todayMood} 
             onWriteClick={() => setActiveTab('write')}
             emotionCharacters={emotionCharacters}
+            allTodayEntries={allTodayEntries}
           />
         )}
         
